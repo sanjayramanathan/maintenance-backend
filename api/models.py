@@ -45,3 +45,40 @@ class Expense(models.Model):
 
     def __str__(self):
         return self.item
+
+
+# ================= NEW MODELS FOR BUDGET APP =================
+
+class BudgetDraft(models.Model):
+    admin = models.ForeignKey(AdminUser, on_delete=models.CASCADE, related_name="budget_drafts")
+    month_year = models.CharField(max_length=100)  # e.g., "January 2024"
+    total_budget = models.FloatField(default=0.0)
+    
+    class Meta:
+        unique_together = ('admin', 'month_year')  # One draft per admin per month
+    
+    def __str__(self):
+        return f"{self.month_year} (₹{self.total_budget})"
+
+
+class BudgetExpense(models.Model):
+    draft = models.ForeignKey(BudgetDraft, on_delete=models.CASCADE, related_name="expenses")
+    item = models.CharField(max_length=200)
+    amount = models.FloatField()
+    date = models.CharField(max_length=20)
+    is_card = models.BooleanField(default=False)
+    category = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return f"{self.item} - ₹{self.amount}"
+
+
+class Category(models.Model):
+    admin = models.ForeignKey(AdminUser, on_delete=models.CASCADE, related_name="categories")
+    name = models.CharField(max_length=100)
+    
+    class Meta:
+        unique_together = ('admin', 'name')  # Unique category per admin
+    
+    def __str__(self):
+        return self.name
