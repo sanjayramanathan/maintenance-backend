@@ -354,3 +354,17 @@ def delete_category(request):
         return Response({"success": True})
     except (AdminUser.DoesNotExist, Category.DoesNotExist):
         return Response({"error": "Category not found"})
+    
+@api_view(["POST"])
+def delete_budget_draft(request):
+    draft_id = request.data.get("draft_id")
+    
+    if not draft_id:
+        return Response({"error": "draft_id required"})
+    
+    try:
+        draft = BudgetDraft.objects.get(id=draft_id)
+        draft.delete()
+        return Response({"success": True})
+    except BudgetDraft.DoesNotExist:
+        return Response({"error": "Draft not found"})

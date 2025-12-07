@@ -31,4 +31,6 @@ urlpatterns = [
     path("category/list/", views.get_categories),
     path("category/add/", views.add_category),
     path("category/delete/", views.delete_category),
+    
+    path("budget/draft/delete/", views.delete_budget_draft),
 ]
